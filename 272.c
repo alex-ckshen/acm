@@ -22,7 +22,7 @@ Sample Output
 
 #define decode_number 7
 
-main(void){
+int main(void){
     #if (all_ascii==1)
     for(int i=33;i<=126;i++){
         printf("ascii %d is %c\n",i,i);
