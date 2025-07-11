@@ -66,7 +66,7 @@ get_cycle_length(int n){
 
 
 
-main(void){
+int main(void){
 //==============================================get raw input
     for(int i=0; i<=memory; i++){
         raw_input[i]=0;
