@@ -42,7 +42,7 @@ int sequence = 0;       //number count (1,2,...)
 int all_sequence = 0;   //number count (1,2,...)
 
 
-get_cycle_length(int n){
+int get_cycle_length(int n){
 
     int continue_loop = 1;
     int cycle_length_count = 0;
