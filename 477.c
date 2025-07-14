@@ -78,9 +78,9 @@ int position(int point_number){
                 //
             }
         }else if(figure_type[figure_number] == 1){                //circle
-            int sqrt_distance_x = (circle_x[circles_including[figure_number]]-point_position_x)*(circle_x[circles_including[figure_number]]-point_position_x);
-            int sqrt_distance_y = (circle_y[circles_including[figure_number]]-point_position_y)*(circle_y[circles_including[figure_number]]-point_position_y);
-            int sqrt_radius = radius[circles_including[figure_number]]*radius[circles_including[figure_number]];
+            float sqrt_distance_x = (circle_x[circles_including[figure_number]]-point_position_x)*(circle_x[circles_including[figure_number]]-point_position_x);
+            float sqrt_distance_y = (circle_y[circles_including[figure_number]]-point_position_y)*(circle_y[circles_including[figure_number]]-point_position_y);
+            float sqrt_radius = radius[circles_including[figure_number]]*radius[circles_including[figure_number]];
 
             if(sqrt_distance_x+sqrt_distance_y<sqrt_radius){
                     //printf("%d+%d>%d\n",sqrt_distance_x,sqrt_distance_y,sqrt_radius);
