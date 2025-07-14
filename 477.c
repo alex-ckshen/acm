@@ -2,10 +2,13 @@
 Sample Input----------------------------------
 r 8.5 17.0 25.5 -8.5
 c 20.2 7.3 5.8
+t -1.0 -1.0 10.1 2.2 .4 1.4
 r 0.0 10.3 5.5 0.0
 c -5.0 -5.0 3.7
+t 20.3 9.8 10.0 -3.2 17.5 -7.7
 r 2.5 12.5 12.5 2.5
 c 5.0 15.0 7.2
+t -10.0 -10.0 10.0 25.0 30.0 -10.0
 *
 2.0 2.0
 4.7 5.3
@@ -16,15 +19,22 @@ c 5.0 15.0 7.2
 9999.9 9999.9
 
 Sample Output----------------------------------
-Point 1 is contained in figure 3
-Point 2 is contained in figure 3
-Point 2 is contained in figure 5
-Point 3 is contained in figure 5
-Point 3 is contained in figure 6
+Point 1 is contained in figure 4
+Point 1 is contained in figure 9
+Point 2 is contained in figure 4
+Point 2 is contained in figure 7
+Point 2 is contained in figure 9
+Point 3 is contained in figure 7
+Point 3 is contained in figure 8
+Point 3 is contained in figure 9
 Point 4 is not contained in any figure
 Point 5 is contained in figure 1
 Point 5 is contained in figure 2
-Point 6 is contained in figure 4
+Point 5 is contained in figure 6
+Point 5 is contained in figure 9
+Point 6 is contained in figure 5
+Point 6 is contained in figure 9
+
 *///////////////////////////////////////////////
 #include<stdio.h>
 #define memory 100
@@ -37,13 +47,6 @@ float rectangle_DR_x[memory];
 float rectangle_DR_y[memory];
 float circle_x[memory];
 float circle_y[memory];
-
-float gapped_rectangle_TL_x[memory];
-float gapped_rectangle_TL_y[memory];
-float gapped_rectangle_DR_x[memory];
-float gapped_rectangle_DR_y[memory];
-float gapped_circle_x[memory];
-float gapped_circle_y[memory];
 
 float radius[memory];
 
@@ -74,9 +77,9 @@ int position(int point_number){
     for(int figure_number = 1; figure_number<=figure_count; figure_number++){
 
         if(figure_type[figure_number] == 0){                      //rectangle
-            if(gapped_rectangle_TL_x[figure_number]<point_position_x && point_position_x<gapped_rectangle_DR_x[figure_number]
+            if(rectangle_TL_x[rectangles_including[figure_number]]<point_position_x && point_position_x<rectangle_DR_x[rectangles_including[figure_number]]
             &&
-            gapped_rectangle_DR_y[figure_number]<point_position_y && point_position_y<gapped_rectangle_TL_y[figure_number]){
+            rectangle_DR_y[rectangles_including[figure_number]]<point_position_y && point_position_y<rectangle_TL_y[rectangles_including[figure_number]]){
                 total_containing_count++;
                 containing_list[total_containing_count]=figure_number;
 
@@ -84,11 +87,9 @@ int position(int point_number){
                 //
             }
         }else if(figure_type[figure_number] == 1){                //circle
-            int circle_serial = circles_including[figure_number];
-
-            int sqrt_distance_x = (gapped_circle_x[figure_number]-point_position_x)*(gapped_circle_x[figure_number]-point_position_x);
-            int sqrt_distance_y = (gapped_circle_y[figure_number]-point_position_y)*(gapped_circle_y[figure_number]-point_position_y);
-            int sqrt_radius = radius[circle_serial]*radius[circle_serial];
+            int sqrt_distance_x = (circle_x[circles_including[figure_number]]-point_position_x)*(circle_x[circles_including[figure_number]]-point_position_x);
+            int sqrt_distance_y = (circle_y[circles_including[figure_number]]-point_position_y)*(circle_y[circles_including[figure_number]]-point_position_y);
+            int sqrt_radius = radius[circles_including[figure_number]]*radius[circles_including[figure_number]];
 
             if(sqrt_distance_x+sqrt_distance_y<sqrt_radius){
                     //printf("%d+%d>%d\n",sqrt_distance_x,sqrt_distance_y,sqrt_radius);
@@ -112,12 +113,6 @@ int main(void){
         rectangle_DR_y[clear] = 0;
         circle_x[clear] = 0;
         circle_y[clear] = 0;
-        gapped_rectangle_TL_x[clear] = 0;
-        gapped_rectangle_TL_y[clear] = 0;
-        gapped_rectangle_DR_x[clear] = 0;
-        gapped_rectangle_DR_y[clear] = 0;
-        gapped_circle_x[clear] = 0;
-        gapped_circle_y[clear] = 0;
         radius[clear] = 0;
         point_x[clear] = 0;
         point_y[clear] = 0;
@@ -178,19 +173,15 @@ int main(void){
                 switch(fill_in_sequence){
                 case 0:
                     rectangle_TL_x[rectangles_including[figure_count]] = figure_read_in;
-                    gapped_rectangle_TL_x[figure_count] = figure_read_in;
                     break;
                 case 1:
                     rectangle_TL_y[rectangles_including[figure_count]] = figure_read_in;
-                    gapped_rectangle_TL_y[figure_count] = figure_read_in;
                     break;
                 case 2:
                     rectangle_DR_x[rectangles_including[figure_count]] = figure_read_in;
-                    gapped_rectangle_DR_x[figure_count] = figure_read_in;
                     break;
                 case 3:
                     rectangle_DR_y[rectangles_including[figure_count]] = figure_read_in;
-                    gapped_rectangle_DR_y[figure_count] = figure_read_in;
 
                     read_in_status = 0;
                     break;
@@ -202,11 +193,9 @@ int main(void){
                 switch(fill_in_sequence){
                 case 0:
                     circle_x[circles_including[figure_count]] = figure_read_in;
-                    gapped_circle_x[figure_count] = figure_read_in;
                     break;
                 case 1:
                     circle_y[circles_including[figure_count]] = figure_read_in;
-                    gapped_circle_y[figure_count] = figure_read_in;
                     break;
                 case 2:
                     radius[circles_including[figure_count]] = figure_read_in;
