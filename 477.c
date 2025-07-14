@@ -118,7 +118,7 @@ int main(void){
     int state = 3;    //0 stop ; 1 r ; 2 c ; 3 defult
 
     rectangles_including[0]=0;
-    rectangles_including[0]=0;
+    circles_including[0]=0;
 
     do{
         if(read_in_status == 0){      //first letter
