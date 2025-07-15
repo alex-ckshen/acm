@@ -39,7 +39,7 @@ Point 6 is contained in figure 9
 #include<stdio.h>
 #define memory 100
 
-#define DBG 1
+#define DBG 0
 
 float rectangle_TL_x[memory];
 float rectangle_TL_y[memory];
@@ -69,6 +69,76 @@ int circles_including[memory];
 int tryangles_including[memory];
 
 
+//only required: top/left/right
+int get_tryangles_point(int figure_serial,char to_get){//to_get : T / R / L
+    char tryangle_points[3];
+    int T = tryangles_including[figure_serial];
+
+    /*===============================================
+    get top ( Y axle )
+
+             |---> a>c  ===>a
+    ---> a>b |
+             |---> a<c  ===>C
+
+             |---> b>c  ===>b
+    ---> a<b |
+             |---> b<c  ===>c
+    *///=============================================
+    if(raw_tryangle_ay[T]>raw_tryangle_by[T]){
+        if(raw_tryangle_ay[T]>raw_tryangle_cy[T]){tryangle_points[0] = 'a';}
+        else{tryangle_points[0] = 'c';}
+    }else{
+        if(raw_tryangle_by[T]>raw_tryangle_cy[T]){tryangle_points[0] = 'b';}
+        else{tryangle_points[0] = 'c';}
+    }
+
+
+    /*===============================================
+    get side ( X axle )
+
+      TOP  |      L<R
+    -------------------------
+           | ---> b<c
+    ---> a |
+           | ---> c<b
+    -------------------------
+           | ---> a<c
+    ---> b |
+           | ---> c<a
+    -------------------------
+           | ---> a<b
+    ---> c |
+           | ---> b<a
+    *///=============================================
+    switch(tryangle_points[0]){
+    case 'a':
+        if(raw_tryangle_bx[T]<raw_tryangle_cx[T]){tryangles_point[1]='b';tryangles_point[2]='c';}
+        else{tryangles_point[1]='c';tryangles_point[2]='b';}
+        break;
+    case 'b':
+        if(raw_tryangle_ax[T]<raw_tryangle_cx[T]){tryangles_point[1]='a';tryangles_point[2]='c';}
+        else{tryangles_point[1]='c';tryangles_point[2]='a';}
+        break;
+    case 'c':
+        if(raw_tryangle_ax[T]<raw_tryangle_bx[T]){tryangles_point[1]='a';tryangles_point[2]='b';}
+        else{tryangles_point[1]='b';tryangles_point[2]='a';}
+        break;
+    }
+
+    switch(to_get){
+        case 'T':
+            return tryangle_points[0];
+            break;
+        case 'R':
+            return tryangle_points[1];
+            break;
+        case 'L':
+            return tryangle_points[2];
+            break;
+
+    }
+}
 
 int temp_size_list_x[3];
 int temp_size_list_y[3];
@@ -181,14 +251,23 @@ float size_to_y(int total_figure,int size_return){
     }
 }
 
+
 float M;
 int liner_value(float x1, float y1, float x2, float y2, float observe_x, float observe_y){
     float x_value = x1;
-    float y_value = x2;
+    float y_value = y1;
     float k;
 
+    //y=M*x + k
     M=(y1-y2)/(x1-x2);
-    k= M*x_value + y_value;
+    k= y_value - M*x_value;
+
+    #if(DBG==1)
+    printf("m = %f\n",M);
+    printf("k = %f\n",k);
+    printf("k= y_value - M*x_value;\n");
+    printf("%f-%f*%f=%f\n",y_value,M,x_value,k);
+    #endif
 
     int F = observe_x - (1/M)*observe_y + (k/M);
 
@@ -235,7 +314,7 @@ int position(int point_number){
                 }
 
         }else if(figure_type[figure_number] == 3){//==============================tryangle
-            int figure_number = figure_number;
+/*            int figure_number = figure_number;
 
             float highest_x = size_to_x(figure_number, size(figure_number,'y','l') );
             float highest_y = size_to_y(figure_number, size(figure_number,'y','l') );
@@ -306,7 +385,7 @@ int position(int point_number){
 
             }
 
-        }
+*/        }
     }
 
     return total_containing_count;
