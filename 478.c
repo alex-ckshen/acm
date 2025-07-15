@@ -113,16 +113,16 @@ int get_tryangles_point(int figure_serial,char to_get){//to_get : T / R / L
     *///=============================================
     switch(tryangle_points[0]){
     case 'a':
-        if(raw_tryangle_bx[T]<raw_tryangle_cx[T]){tryangles_point[1]='b';tryangles_point[2]='c';}
-        else{tryangles_point[1]='c';tryangles_point[2]='b';}
+        if(raw_tryangle_bx[T]<raw_tryangle_cx[T]){tryangle_points[1]='b';tryangle_points[2]='c';}
+        else{tryangle_points[1]='c';tryangle_points[2]='b';}
         break;
     case 'b':
-        if(raw_tryangle_ax[T]<raw_tryangle_cx[T]){tryangles_point[1]='a';tryangles_point[2]='c';}
-        else{tryangles_point[1]='c';tryangles_point[2]='a';}
+        if(raw_tryangle_ax[T]<raw_tryangle_cx[T]){tryangle_points[1]='a';tryangle_points[2]='c';}
+        else{tryangle_points[1]='c';tryangle_points[2]='a';}
         break;
     case 'c':
-        if(raw_tryangle_ax[T]<raw_tryangle_bx[T]){tryangles_point[1]='a';tryangles_point[2]='b';}
-        else{tryangles_point[1]='b';tryangles_point[2]='a';}
+        if(raw_tryangle_ax[T]<raw_tryangle_bx[T]){tryangle_points[1]='a';tryangle_points[2]='b';}
+        else{tryangle_points[1]='b';tryangle_points[2]='a';}
         break;
     }
 
@@ -137,6 +137,64 @@ int get_tryangles_point(int figure_serial,char to_get){//to_get : T / R / L
             return tryangle_points[2];
             break;
 
+    }
+}
+int get_tryangles_point_XY(int figure_serial,char X_or_Y,char to_get){
+    int T = tryangles_including[figure_serial];
+    char get;
+
+    switch(X_or_Y){
+    case 'X':
+        switch (to_get){
+        case 'T':
+            get = get_tryangles_point(T,'T');
+            break;
+        case 'R':
+            get = get_tryangles_point(T,'R');
+            break;
+        case 'L':
+            get = get_tryangles_point(T,'L');
+            break;
+        }
+        //====================
+        switch(get){
+        case 'a':
+            return raw_tryangle_ax[T];
+            break;
+        case 'b':
+            return raw_tryangle_bx[T];
+            break;
+        case 'c':
+            return raw_tryangle_cx[T];
+            break;
+        }
+
+        break;
+
+    case 'Y':
+        switch (to_get){
+        case 'T':
+            get = get_tryangles_point(T,'T');
+        case 'R':
+            get = get_tryangles_point(T,'R');
+        case 'L':
+            get = get_tryangles_point(T,'L');
+        }
+        //====================
+        switch(get){
+        case 'a':
+            return raw_tryangle_ay[T];
+            break;
+        case 'b':
+            return raw_tryangle_by[T];
+            break;
+        case 'c':
+            return raw_tryangle_cy[T];
+            break;
+        }
+
+
+        break;
     }
 }
 
@@ -314,78 +372,31 @@ int position(int point_number){
                 }
 
         }else if(figure_type[figure_number] == 3){//==============================tryangle
-/*            int figure_number = figure_number;
 
-            float highest_x = size_to_x(figure_number, size(figure_number,'y','l') );
-            float highest_y = size_to_y(figure_number, size(figure_number,'y','l') );
-            float L_other_x;
-            float L_other_y;
-            float R_other_x;
-            float R_other_y;
+            float top_x = get_tryangles_point_XY(figure_number,'X','T');
+            float top_y = get_tryangles_point_XY(figure_number,'Y','T');
+            float right_x = get_tryangles_point_XY(figure_number,'X','R');
+            float right_y = get_tryangles_point_XY(figure_number,'Y','R');
+            float left_x = get_tryangles_point_XY(figure_number,'X','L');
+            float left_y = get_tryangles_point_XY(figure_number,'Y','L');
 
-            if(size(figure_number,'y','l') == 'a'){
-                if(size_to_x(figure_number,'b')<size_to_x(figure_number,'c')){
-                    L_other_x = size_to_x(figure_number,'b');
-                    L_other_y = size_to_y(figure_number,'b');
+            int point_in_V = 0;
+            int point_fully_in = 0;
 
-                    R_other_x = size_to_x(figure_number,'c');
-                    R_other_y = size_to_y(figure_number,'c');
-                }else{
-                    L_other_x = size_to_x(figure_number,'c');
-                    L_other_y = size_to_y(figure_number,'c');
+            if(liner_value(top_x,top_y,left_x,left_y,point_position_x,point_position_y)>0
+             && liner_value(top_x,top_y,right_x,right_y,point_position_x,point_position_y)<0
+            ){point_in_V=1;}
 
-                    R_other_x = size_to_x(figure_number,'b');
-                    R_other_y = size_to_y(figure_number,'b');
-                }
-            }else if(size(figure_number,'y','l') == 'b'){
-                if(size_to_x(figure_number,'a')<size_to_x(figure_number,'c')){
-                    L_other_x = size_to_x(figure_number,'a');
-                    L_other_y = size_to_y(figure_number,'a');
+            if(liner_value(left_x,left_y,right_x,right_y,point_position_x,point_position_y)>0
+             && M<0){point_fully_in=1;}
+            if(liner_value(left_x,left_y,right_x,right_y,point_position_x,point_position_y)<0
+             && M>0){point_fully_in=1;}
 
-                    R_other_x = size_to_x(figure_number,'c');
-                    R_other_y = size_to_y(figure_number,'c');
-                }else{
-                    L_other_x = size_to_x(figure_number,'c');
-                    L_other_y = size_to_y(figure_number,'c');
-
-                    R_other_x = size_to_x(figure_number,'a');
-                    R_other_y = size_to_y(figure_number,'a');
-                }
-            }else if(size(figure_number,'y','l') == 'c'){
-                if(size_to_x(figure_number,'a')<size_to_x(figure_number,'b')){
-                    L_other_x = size_to_x(figure_number,'a');
-                    L_other_y = size_to_y(figure_number,'a');
-
-                    R_other_x = size_to_x(figure_number,'b');
-                    R_other_y = size_to_y(figure_number,'b');
-                }else{
-                    L_other_x = size_to_x(figure_number,'b');
-                    L_other_y = size_to_y(figure_number,'b');
-
-                    R_other_x = size_to_x(figure_number,'a');
-                    R_other_y = size_to_y(figure_number,'a');
-                }
-            }
-
-            printf("(%f,%f)(%f,%f)(%f,%f)\n",highest_x,highest_y,L_other_x,L_other_y,R_other_x,R_other_y);
-
-
-            if(liner_value(highest_x,highest_y,L_other_x,L_other_y,point_position_x,point_position_y) > 0//left
-            && liner_value(highest_x,highest_y,R_other_x,R_other_y,point_position_x,point_position_y) < 0){//right
-
-                float horizontal = liner_value(L_other_x,L_other_y,R_other_x,R_other_y,point_position_x,point_position_y);
-                if(M>0 && horizontal<0){
+             if(point_in_V == 1 &&point_fully_in == 1){
                     total_containing_count++;
                     containing_list[total_containing_count]=figure_number;
-
-                }else if(M<0 && horizontal>0){
-                    total_containing_count++;
-                    containing_list[total_containing_count]=figure_number;
-                }
-
-            }
-
-*/        }
+             }
+        }
     }
 
     return total_containing_count;
